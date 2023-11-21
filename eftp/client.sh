@@ -1,5 +1,8 @@
 #!/bin/bash
 
+IP=`ip address | grep inet | grep enp0s3 | cut -d " " -f 6 | cut -d "/" -f 1`
+echo $IP
+
 SERVER="localhost"
 PORT="3333"
 echo "cliente EFTP"
