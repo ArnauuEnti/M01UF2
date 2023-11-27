@@ -1,12 +1,12 @@
 #!/bin/bash
 
 CLIENT="localhost"
-
+TIMEOUT="1"
 echo "servidor de EFTP"
 
 echo "(0) Listen"
 
-DATA=`nc -l -p 3333 -w 0`
+DATA=`nc -l -p 3333 -w $TIMEOUT`
 
 echo $DATA
 
@@ -27,31 +27,32 @@ sleep 1
 echo "OK_HEADER" | nc $CLIENT 3333
 
 echo "(4) Listen"
-DATA=`nc -l -p 3333 -w 0`
+DATA=`nc -l -p 3333 -w $TIMEOUT`
 
 echo $DATA
 
 echo "(7) Test & Send"
 
-if [ "$DATA != "BOOM" ]
+if [ "$DATA" != "BOOOM" ]
 then
 	echo "ERROR 2: BAD HANDSHAKE"
-	Sleep 1
+	sleep 1
 	echo"KO_HANDSHAKE" | nc $CLIENT 3333
 	exit 2
 fi
 
 echo "OK_HANDSHAKE"
-Sleep 1
+sleep 1
 echo "OK_HANDSHAKE" | nc $CLIENT 3333
 
 echo "(8) Listen"
-DATA=`nc -l -p 3333 -w 0`
+DATA=`nc -l -p 3333 -w $TIMEOUT`
+echo $DATA
 
 echo "(12) Test & Store & Send"
-PREFIX= `echo "$DATA | cut -d " " -f 1`
+PREFIX=`echo "$DATA" | cut -d " " -f 1`
 
-if [ "$PREFIX" == "FILE_NAME" ]
+if [ "$PREFIX" != "FILE_NAME" ]
 then
 	echo "ERROR 3: BAD FILE NAME PREFIX"
 	sleep 1
@@ -60,11 +61,11 @@ then
 fi
 
 
-FLIE_NAME=`echo "$DATA | cut -d " " -f 2`
+FILE_NAME=`echo "$DATA" | cut -d " " -f 2`
 echo "OK_FILE_NAME" | nc $CLIENT 3333
 
 echo "(13) Listen"
-DATA=`nc -l -p 3333 -w 0`
+DATA=`nc -l -p 3333 -w $TIMEOUT`
 
 echo "(16) store & Send"
 

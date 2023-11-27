@@ -2,7 +2,7 @@
 
 IP=`ip address | grep inet | grep enp0s3 | cut -d " " -f 6 | cut -d "/" -f 1`
 echo $IP
-
+TIMEOUT="1"
 SERVER="localhost"
 PORT="3333"
 echo "cliente EFTP"
@@ -10,7 +10,7 @@ echo "cliente EFTP"
 echo "(1) Send"
 echo "EFTP 1.0" | nc $SERVER 3333
 echo "(2) Listen"
-DATA=`nc -l -p 3333 -w 0`
+DATA=`nc -l -p 3333 -w $TIMEOUT`
 echo $DATA
 
 echo "(5) Test & Send"
@@ -21,13 +21,13 @@ then
 	exit 1
 fi
 
-echo "BOOM"
+echo "BOOOM"
 sleep 1
-echo "BOOM" | nc $SERVER 3333
+echo "BOOOM" | nc $SERVER 3333
 
 echo "(6) Listen"
 
-DATA=`nc -l -p 3333 -w 0`
+DATA=`nc -l -p 3333 -w $TIMEOUT`
 
 
 echo $DATA
@@ -35,7 +35,7 @@ echo $DATA
 
 echo "(9) Test"
 
-if [ $DATA != "OK_HANDSHAKE" ]
+if [ "$DATA" != "OK_HANDSHAKE" ]
 then
 	echo "ERROR 2:BAD HANDSHAKE"
 	exit 2
@@ -44,10 +44,10 @@ fi
 
 echo "(10) Send"
 sleep 1
-echo "FILE_NAME fary1.txt | nc $SERVER $PORT
+echo "FILE_NAME fary1.txt" | nc $SERVER $PORT
 
 echo "(11) Listen"
-DATA=`nc -l -p 3333 -w 0`
+DATA=`nc -l -p 3333 -w $TIMEOUT`
 
 echo "(14) Send"
 
@@ -60,7 +60,7 @@ sleep 1
 cat imgs/fary1.txt | nc $SERVER 3333
 
 echo "(15) Listen"
-DATA=`nc -l -p 3333 -w 0`
+DATA=`nc -l -p 3333 -w $TIMEOUT`
 
 if [ "$DATA" != "OK_DATA" ]
 then
