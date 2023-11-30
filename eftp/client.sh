@@ -1,9 +1,18 @@
 #!/bin/bash
 
+if [ $# -eq 0 ]
+then
+SERVER="localhost"
+elif [$# -eq 1 ]
+then
+SERVER=$1
+fi
+
+echo $0
+
 IP=`ip address | grep inet | grep enp0s3 | cut -d " " -f 6 | cut -d "/" -f 1`
 echo $IP
 TIMEOUT="1"
-SERVER="localhost"
 PORT="3333"
 echo "cliente EFTP"
 
@@ -79,6 +88,18 @@ echo "FILE_MD5 $FILE_MD5" | nc $SERVER 3333
 
 echo "(19) Listen"
 DATA=`nc -l -p 3333 -w $TIMEOUT`
+
+
+echo "(21) Test"
+
+if [ "$DATA" != "OK_FILE_MD5" ]
+then
+	echo "ERROR 5: FILE MD5"
+	exit 5
+fi
+
+echo "FIN"
+exit 0
 
 echo "FIN"
 exit 0
