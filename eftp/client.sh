@@ -50,6 +50,23 @@ then
 	exit 2
 fi
 
+echo "(9a) SEND NUM_FILES"
+
+NUM_FILES=`ls imgs/ | wc -l`
+sleep 1
+echo "NUM_FILES $NUM_FILES" | nc $SERVER 3333
+
+echo "(9b) LISTEN OK/KO_NUM_FILES"
+DATA=`nc -l -p 3333 -w $TIMEOUT`
+
+if [ "$DATA" != "OK_FILE_NUM" ]
+then
+echo "ERROR 3a: WRONG FILE_NUM"
+exit 3
+fi
+
+for FILE_NAME in `ls imgs/`
+do
 
 echo "(10) Send"
 sleep 1
@@ -98,8 +115,8 @@ then
 	exit 5
 fi
 
-echo "FIN"
-exit 0
+done
 
 echo "FIN"
 exit 0
+

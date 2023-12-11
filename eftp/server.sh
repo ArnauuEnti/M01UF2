@@ -45,7 +45,29 @@ echo "OK_HANDSHAKE"
 sleep 1
 echo "OK_HANDSHAKE" | nc $CLIENT 3333
 
-echo "(8) Listen"
+echo "(7a) LISTEN NUM_FILES"
+
+DATA=`nc -l -p 3333 -w $TIMEOUT`
+echo $DATA
+
+echo "(7b) Send OK/KO_NUM_FILES"
+PREFIX=`echo $DATA | cut -d " " -f 1`
+if [ "$PREFIX" != "NUM_FILES" ]
+then
+echo "ERROR 3a: WRONG NUM_FILES PREFIXS"
+echo "KO_FILE_NUM" | nc $CLIENT 3333
+exit 3
+
+fi
+
+echo "OK_FILE_NUM" | nc $CLIENT 3333
+FILE_NUM=`echo $DATA | cut -d " " -f 2`
+
+for N in `seq $FILE_NUM`
+do
+echo "archivo numero $N"
+
+echo "(8b) Listen"
 DATA=`nc -l -p 3333 -w $TIMEOUT`
 echo $DATA
 
@@ -118,8 +140,8 @@ fi
 
 echo "OK_FILE_MD5" | nc $CLIENT 3333
 
-echo "FIN"
-exit 0
+done
 
 echo "FIN"
 exit 0
+
